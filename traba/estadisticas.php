@@ -189,10 +189,24 @@ $conexion->close();
 
     <script>
         // Datos desde PHP
-        const anios = <?php echo json_encode($anios); ?>;
+        /*const anios = <?php echo json_encode($anios); ?>;
         const pagosTotales = <?php echo json_encode($pagos_totales); ?>;
         const pagosInteres = <?php echo json_encode($pagos_interes); ?>;
-        const pagosCapital = <?php echo json_encode($pagos_capital); ?>;
+        const pagosCapital = <?php echo json_encode($pagos_capital); ?>;*/
+
+        // Datos ficticios (arreglos para los pagos por mes)
+        const valoresTotales = [13000, 9500, 9375, 8743, 12151, 12686, 14244, 12275, 5977, 9010];
+        const valoresInteres = [7000, 4500, 4375, 4143, 6151, 6686, 7244, 5275, 2977, 4010];
+        const valoresCapital = [6000, 5000, 5000, 4300, 6000, 6000, 7000, 7000, 3000, 5000];
+
+        // Sumar valores para calcular totales
+        const totalPagosTotales = valoresTotales.reduce((a, b) => a + b, 0);
+        const totalPagosInteres = valoresInteres.reduce((a, b) => a + b, 0);
+        const totalPagosCapital = valoresCapital.reduce((a, b) => a + b, 0);
+
+        const maxValor = totalPagosTotales * 1.2; // Margen superior al total
+
+
 
         // Función para crear un medidor semicircular
         function crearMedidor(ctx, valor, total, color) {
@@ -220,24 +234,31 @@ $conexion->close();
         // Crear medidores
         crearMedidor(
             document.getElementById('chartPagosTotales'),
-            pagosTotales.reduce((a, b) => a + b, 0),
-            pagosTotales.reduce((a, b) => a + b, 0) * 1.2,
+            totalPagosTotales,
+            maxValor,
+            //pagosTotales.reduce((a, b) => a + b, 0),
+            //pagosTotales.reduce((a, b) => a + b, 0) * 1.2,
             '#333333'
         );
         crearMedidor(
             document.getElementById('chartPagosInteres'),
-            pagosInteres.reduce((a, b) => a + b, 0),
-            pagosTotales.reduce((a, b) => a + b, 0),
+            //pagosInteres.reduce((a, b) => a + b, 0),
+            //pagosTotales.reduce((a, b) => a + b, 0),
+            totalPagosInteres,
+            maxValor,
             '#FFD700'
         );
         crearMedidor(
             document.getElementById('chartPagosCapital'),
-            pagosCapital.reduce((a, b) => a + b, 0),
-            pagosTotales.reduce((a, b) => a + b, 0),
+            //pagosCapital.reduce((a, b) => a + b, 0),
+            //pagosTotales.reduce((a, b) => a + b, 0),
+            totalPagosCapital,
+            maxValor,
             '#808080'
         );
 
         // Gráfica de barras apiladas
+        const anios = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct"];
         new Chart(document.getElementById('chartBarras'), {
             type: 'bar',
             data: {
@@ -245,17 +266,20 @@ $conexion->close();
                 datasets: [
                     {
                         label: 'Pagos Totales',
-                        data: pagosTotales,
+                        //data: pagosTotales,
+                        data: valoresTotales,
                         backgroundColor: '#333333'
                     },
                     {
                         label: 'Pagos Interés',
-                        data: pagosInteres,
+                        //data: pagosInteres,
+                        data: valoresInteres,
                         backgroundColor: '#FFD700'
                     },
                     {
                         label: 'Pagos Capital',
-                        data: pagosCapital,
+                        //data: pagosCapital,
+                        data: valoresCapital,
                         backgroundColor: '#808080'
                     }
                 ]
